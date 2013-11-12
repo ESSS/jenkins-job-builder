@@ -2810,6 +2810,75 @@ def git(parser, xml_parent, data):
             handle_entity_children(note['note'], xml_note, note_mappings)
 
 
+def descriptionsetter(parser, xml_parent, data):
+    """yaml: descriptionsetter
+    Sets the description for each build, based upon a RegEx test of the build
+    log file.
+
+    Requires the Jenkins `Description Setter Plugin.
+    <https://wiki.jenkins-ci.org/display/JENKINS/Description+Setter+Plugin>`_
+
+    :arg str regexp:
+        If configured, the regular expression will be applied to each line in
+        the build log. A description will be set based on the first match.
+
+        (default: '')
+
+    :arg str description:
+        The description to set on the build.
+            * If a regular expression is configured, every instance of \n will
+              be replaced with the n-th group of the regular expression match.
+
+            * If the description is empty, the first group selected by the
+              regular expression will be used as description.
+
+            * If no regular expression is configured, the description is taken
+              verbatim.
+
+        (default: '')
+
+    :arg str regexp-for-failed:
+        If set, this regular expression will be used instead of the regular
+        regular expression when the build has failed.
+
+        (default: '')
+
+    :arg str description-for-failed:
+        The description to use for failed builds.
+
+        (default: '')
+
+    :arg bool set-for-matrix:
+        Also set the description on a multi-configuration build. The first
+        description found for any of the invididual builds will be used as
+        description for the multi-configuration build.
+
+        This only applies to multi-configuration projects.
+
+        (default: 'false')
+
+    Example::
+
+      publishers:
+        - descriptionsetter:
+            regexp: 'Build description: (.*)'
+    """
+    tsetter = XML.SubElement(
+        xml_parent,
+        'hudson.plugins.descriptionsetter.DescriptionSetterPublisher')
+
+    def add_subelement(name, data_key=None, default=''):
+        if data_key is None:
+            data_key=name
+        XML.SubElement(tsetter, name).text = data.get(data_key, default)
+
+    add_subelement('regexp')
+    add_subelement('description')
+    add_subelement('regexpForFailed', 'regexp-for-failed')
+    add_subelement('descriptionForFailed', 'description-for-failed')
+    add_subelement('setForMatrix', 'set-for-matrix', 'false')
+
+
 class Publishers(jenkins_jobs.modules.base.Base):
     sequence = 70
 

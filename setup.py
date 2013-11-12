@@ -127,6 +127,7 @@ setuptools.setup(
             'copy-to-master=jenkins_jobs.modules.publishers:copy_to_master',
             'coverage=jenkins_jobs.modules.publishers:coverage',
             'cppcheck=jenkins_jobs.modules.publishers:cppcheck',
+            'descriptionsetter=jenkins_jobs.modules.publishers:descriptionsetter',
             'email=jenkins_jobs.modules.publishers:email',
             'email-ext=jenkins_jobs.modules.publishers:email_ext',
             'fingerprint=jenkins_jobs.modules.publishers:fingerprint',
